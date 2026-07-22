@@ -1,5 +1,9 @@
 import React from 'react';
 import BulletListEditor from './BulletListEditor';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import { Card } from '../ui/Card';
+import Badge from '../ui/Badge';
 
 export default function ExperienceForm({ data = { items: [] }, onChange }) {
   const items = Array.isArray(data.items) ? data.items : [];
@@ -53,46 +57,38 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="flex items-center justify-between border-b border-surface-200/80 pb-3">
         <div>
-          <h3 className="text-base font-semibold text-white">Work Experience</h3>
-          <p className="text-xs text-slate-400">
+          <h3 className="text-base font-bold font-display text-surface-900">Work Experience</h3>
+          <p className="text-xs text-surface-500">
             Detail your professional roles, responsibilities, and achievements.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors flex items-center space-x-1 shadow-sm"
-        >
-          <span>+</span>
-          <span>Add Experience</span>
-        </button>
+        <Button size="sm" variant="primary" onClick={handleAdd} leftIcon={<span>+</span>}>
+          Add Experience
+        </Button>
       </div>
 
       {items.length === 0 ? (
-        <div className="p-8 text-center bg-slate-900/60 border border-dashed border-slate-800 rounded-xl space-y-2">
-          <p className="text-sm text-slate-400">No work experience entries added yet.</p>
-          <button
-            type="button"
-            onClick={handleAdd}
-            className="text-xs text-indigo-400 hover:text-indigo-300 font-medium"
-          >
+        <Card padding="p-8" className="text-center bg-white/60 border-dashed border-surface-300 space-y-2">
+          <p className="text-xs text-surface-500">No work experience entries added yet.</p>
+          <Button size="sm" variant="ghost" onClick={handleAdd}>
             + Add your first work experience entry
-          </button>
-        </div>
+          </Button>
+        </Card>
       ) : (
         <div className="space-y-4">
           {items.map((item, index) => (
-            <div
+            <Card
               key={item.id || index}
-              className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-4 relative group"
+              padding="p-5"
+              className="bg-white border-surface-200 shadow-soft-xs space-y-4 relative"
             >
               {/* Item Header Controls */}
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <div className="flex items-center justify-between border-b border-surface-100 pb-2">
+                <Badge variant="secondary" size="sm">
                   Experience #{index + 1}
-                </span>
+                </Badge>
 
                 <div className="flex items-center space-x-1">
                   <button
@@ -100,7 +96,7 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
                     onClick={() => handleMove(index, 'up')}
                     disabled={index === 0}
                     title="Move Up"
-                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-xs"
+                    className="p-1 text-surface-400 hover:text-surface-800 disabled:opacity-30 text-xs cursor-pointer"
                   >
                     ▲
                   </button>
@@ -109,7 +105,7 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
                     onClick={() => handleMove(index, 'down')}
                     disabled={index === items.length - 1}
                     title="Move Down"
-                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-xs"
+                    className="p-1 text-surface-400 hover:text-surface-800 disabled:opacity-30 text-xs cursor-pointer"
                   >
                     ▼
                   </button>
@@ -117,7 +113,7 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
                     type="button"
                     onClick={() => handleRemove(index)}
                     title="Delete Entry"
-                    className="p-1 text-red-400 hover:text-red-300 text-xs ml-2"
+                    className="p-1 text-rose-500 hover:text-rose-700 text-xs ml-2 cursor-pointer"
                   >
                     ✕
                   </button>
@@ -126,65 +122,43 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
 
               {/* Form Input Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Company Name <span className="text-indigo-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={item.company || ''}
-                    onChange={(e) => handleItemChange(index, 'company', e.target.value)}
-                    placeholder="e.g. Google"
-                    className={`w-full px-3 py-2 bg-slate-950 border rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                      !item.company?.trim() ? 'border-amber-500/50' : 'border-slate-800'
-                    }`}
-                  />
-                </div>
+                <Input
+                  label="Company Name"
+                  isRequired
+                  value={item.company || ''}
+                  onChange={(e) => handleItemChange(index, 'company', e.target.value)}
+                  placeholder="e.g. Google"
+                  error={!item.company?.trim() ? 'Company name required' : ''}
+                />
 
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Job Title</label>
-                  <input
-                    type="text"
-                    value={item.role || ''}
-                    onChange={(e) => handleItemChange(index, 'role', e.target.value)}
-                    placeholder="e.g. Senior Software Engineer"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
+                <Input
+                  label="Job Title"
+                  value={item.role || ''}
+                  onChange={(e) => handleItemChange(index, 'role', e.target.value)}
+                  placeholder="e.g. Senior Software Engineer"
+                />
 
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Location</label>
-                  <input
-                    type="text"
-                    value={item.location || ''}
-                    onChange={(e) => handleItemChange(index, 'location', e.target.value)}
-                    placeholder="e.g. Mountain View, CA"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
+                <Input
+                  label="Location"
+                  value={item.location || ''}
+                  onChange={(e) => handleItemChange(index, 'location', e.target.value)}
+                  placeholder="e.g. Mountain View, CA"
+                />
 
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Start Date</label>
-                  <input
-                    type="text"
-                    value={item.startDate || ''}
-                    onChange={(e) => handleItemChange(index, 'startDate', e.target.value)}
-                    placeholder="e.g. Jan 2022"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
+                <Input
+                  label="Start Date"
+                  value={item.startDate || ''}
+                  onChange={(e) => handleItemChange(index, 'startDate', e.target.value)}
+                  placeholder="e.g. Jan 2022"
+                />
 
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">End Date</label>
-                  <input
-                    type="text"
-                    value={item.current ? 'Present' : item.endDate || ''}
-                    disabled={item.current}
-                    onChange={(e) => handleItemChange(index, 'endDate', e.target.value)}
-                    placeholder="e.g. Present"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-                  />
-                </div>
+                <Input
+                  label="End Date"
+                  value={item.current ? 'Present' : item.endDate || ''}
+                  isDisabled={item.current}
+                  onChange={(e) => handleItemChange(index, 'endDate', e.target.value)}
+                  placeholder="e.g. Present"
+                />
 
                 <div className="sm:col-span-2 flex items-center space-x-2 pt-1">
                   <input
@@ -192,23 +166,23 @@ export default function ExperienceForm({ data = { items: [] }, onChange }) {
                     id={`exp-current-${index}`}
                     checked={item.current || false}
                     onChange={(e) => handleItemChange(index, 'current', e.target.checked)}
-                    className="w-4 h-4 rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-indigo-500"
+                    className="w-4 h-4 rounded bg-white border-surface-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
                   />
-                  <label htmlFor={`exp-current-${index}`} className="text-xs text-slate-300">
+                  <label htmlFor={`exp-current-${index}`} className="text-xs text-surface-600 font-medium cursor-pointer">
                     I am currently working here
                   </label>
                 </div>
               </div>
 
               {/* Bullet Points List Editor */}
-              <div className="pt-2 border-t border-slate-800/60">
+              <div className="pt-2 border-t border-surface-100">
                 <BulletListEditor
                   bullets={item.bullets || []}
                   onChange={(newBullets) => handleItemChange(index, 'bullets', newBullets)}
                   label="Key Achievements & Responsibilities"
                 />
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

@@ -7,6 +7,8 @@ import ExperienceForm from '../components/builder/ExperienceForm';
 import ProjectsForm from '../components/builder/ProjectsForm';
 import SkillsForm from '../components/builder/SkillsForm';
 import ResumePreview from '../components/builder/ResumePreview';
+import Button from '../components/ui/Button';
+import Badge, { Pill } from '../components/ui/Badge';
 
 const ACTIVE_SECTIONS = [
   { id: 'personal_info', label: 'Personal Info', icon: '👤', sortOrder: 1 },
@@ -19,7 +21,7 @@ const ACTIVE_SECTIONS = [
 const COMING_SOON_SECTIONS = [
   { id: 'certifications', label: 'Certifications', icon: '📜' },
   { id: 'achievements', label: 'Achievements', icon: '🏆' },
-  { id: 'positions_of_responsibility', label: 'Positions of Responsibility', icon: '🛡️' },
+  { id: 'positions_of_responsibility', label: 'Responsibility', icon: '🛡️' },
   { id: 'languages', label: 'Languages', icon: '🌐' },
   { id: 'interests', label: 'Interests', icon: '🎯' },
 ];
@@ -154,10 +156,10 @@ export default function Builder() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
-        <div className="flex items-center space-x-3">
-          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-slate-400 font-medium">Loading resume builder...</span>
+      <div className="min-h-screen bg-brand-canvas text-surface-900 flex items-center justify-center font-body">
+        <div className="flex items-center space-x-3 bg-white p-6 rounded-2xl border border-surface-200 shadow-soft-md">
+          <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-surface-600 text-xs font-semibold">Loading resume builder...</span>
         </div>
       </div>
     );
@@ -165,18 +167,17 @@ export default function Builder() {
 
   if (error || !resume) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4">
-        <div className="bg-slate-800 border border-slate-700 p-8 rounded-2xl max-w-md text-center space-y-4">
-          <div className="w-12 h-12 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto text-xl">
+      <div className="min-h-screen bg-brand-canvas text-surface-900 flex flex-col items-center justify-center p-4 font-body">
+        <div className="bg-white border border-surface-200 p-8 rounded-2xl max-w-md text-center space-y-4 shadow-soft-xl">
+          <div className="w-12 h-12 bg-rose-50 border border-rose-200 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-xl shadow-soft-xs">
             ⚠️
           </div>
-          <h2 className="text-xl font-bold text-white">Error Loading Resume</h2>
-          <p className="text-slate-400 text-sm">{error || 'Resume not found'}</p>
-          <Link
-            to="/dashboard"
-            className="inline-block px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg text-sm transition-colors"
-          >
-            Back to Dashboard
+          <h2 className="text-xl font-bold font-display text-surface-900">Error Loading Resume</h2>
+          <p className="text-surface-500 text-xs">{error || 'Resume not found'}</p>
+          <Link to="/dashboard">
+            <Button variant="primary" size="sm">
+              Back to Dashboard
+            </Button>
           </Link>
         </div>
       </div>
@@ -184,60 +185,52 @@ export default function Builder() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-surface-50 text-surface-900 flex flex-col font-body selection:bg-brand-500/20 selection:text-brand-700">
       {/* Top Header */}
-      <header className="h-16 bg-slate-800/90 border-b border-slate-700/80 backdrop-blur px-4 md:px-6 flex items-center justify-between sticky top-0 z-30">
+      <header className="h-16 bg-white/90 border-b border-surface-200/80 backdrop-blur px-4 md:px-6 flex items-center justify-between sticky top-0 z-30 shadow-soft-xs">
         <div className="flex items-center space-x-4">
-          <Link
-            to="/dashboard"
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/60 rounded-lg transition-colors text-sm flex items-center space-x-1"
-          >
-            <span>←</span>
-            <span className="hidden sm:inline font-medium">Dashboard</span>
+          <Link to="/dashboard">
+            <Button variant="ghost" size="sm" leftIcon={<span>←</span>}>
+              Dashboard
+            </Button>
           </Link>
-          <div className="h-5 w-px bg-slate-700"></div>
-          <h1 className="text-base md:text-lg font-bold text-white tracking-tight truncate max-w-xs md:max-w-md">
+          <div className="h-5 w-px bg-surface-200"></div>
+          <h1 className="text-base md:text-lg font-bold font-display text-surface-900 tracking-tight truncate max-w-xs md:max-w-md">
             {resume.title}
           </h1>
         </div>
 
-        {/* Save Status Indicator */}
+        {/* Styled Save Status Indicator Badge */}
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-xs font-medium">
-            {saveStatus === 'Saving...' && (
-              <>
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                <span className="text-amber-400">Saving...</span>
-              </>
-            )}
-            {saveStatus === 'All changes saved' && (
-              <>
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span className="text-emerald-400">All changes saved</span>
-              </>
-            )}
-            {saveStatus === 'Failed to save' && (
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-red-400"></span>
-                <span className="text-red-400">Failed to save</span>
-                <button
-                  onClick={handleRetrySave}
-                  className="px-2 py-0.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded text-[10px] font-semibold transition-colors"
-                >
-                  Retry
-                </button>
-              </div>
-            )}
-          </div>
+          {saveStatus === 'Saving...' && (
+            <Badge variant="warning" size="md" dot>
+              Saving...
+            </Badge>
+          )}
+          {saveStatus === 'All changes saved' && (
+            <Badge variant="success" size="md" dot>
+              All changes saved
+            </Badge>
+          )}
+          {saveStatus === 'Failed to save' && (
+            <div className="flex items-center space-x-2">
+              <Badge variant="danger" size="md" dot>
+                Failed to save
+              </Badge>
+              <Button size="sm" variant="outline" onClick={handleRetrySave}>
+                Retry
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Main Two-Panel Content */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Left Panel: Section Navigation & Active Form */}
-        <div className="w-full md:w-1/2 lg:w-5/12 border-r border-slate-800 flex flex-col bg-slate-900/50">
+        <div className="w-full md:w-1/2 lg:w-5/12 border-r border-surface-200 flex flex-col bg-white">
           {/* Horizontal scrollable tabs */}
-          <div className="p-3 bg-slate-800/40 border-b border-slate-800 overflow-x-auto scrollbar-none">
+          <div className="p-3 bg-surface-50/80 border-b border-surface-200/80 overflow-x-auto scrollbar-none">
             <div className="flex space-x-2">
               {ACTIVE_SECTIONS.map((sec) => {
                 const isActive = activeTab === sec.id;
@@ -245,10 +238,10 @@ export default function Builder() {
                   <button
                     key={sec.id}
                     onClick={() => setActiveTab(sec.id)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center space-x-1.5 ${
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center space-x-1.5 cursor-pointer ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                        : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700/60'
+                        ? 'bg-gradient-brand text-white shadow-soft-sm'
+                        : 'bg-white text-surface-600 hover:text-brand-600 hover:bg-brand-50/60 border border-surface-200/60'
                     }`}
                   >
                     <span>{sec.icon}</span>
@@ -260,10 +253,10 @@ export default function Builder() {
           </div>
 
           <div className="flex-1 flex flex-col md:flex-row overflow-y-auto">
-            {/* Sidebar nav */}
-            <div className="w-full md:w-48 bg-slate-800/20 border-b md:border-b-0 md:border-r border-slate-800 p-2 space-y-1">
-              <div className="px-2 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                Sections
+            {/* Sidebar Navigation */}
+            <div className="w-full md:w-48 bg-surface-50/50 border-b md:border-b-0 md:border-r border-surface-200/80 p-3 space-y-1">
+              <div className="px-2 py-1 text-[10px] font-bold text-surface-400 uppercase tracking-wider">
+                Active Sections
               </div>
               {ACTIVE_SECTIONS.map((sec) => {
                 const isActive = activeTab === sec.id;
@@ -271,10 +264,10 @@ export default function Builder() {
                   <button
                     key={sec.id}
                     onClick={() => setActiveTab(sec.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
+                    className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-between cursor-pointer ${
                       isActive
-                        ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                        ? 'bg-brand-50 text-brand-700 border border-brand-200/80 shadow-soft-xs'
+                        : 'text-surface-600 hover:text-surface-900 hover:bg-surface-100/70'
                     }`}
                   >
                     <span className="flex items-center space-x-2">
@@ -285,29 +278,29 @@ export default function Builder() {
                 );
               })}
 
-              <div className="pt-2">
-                <div className="px-2 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+              <div className="pt-3">
+                <div className="px-2 py-1 text-[10px] font-bold text-surface-400 uppercase tracking-wider">
                   More Sections
                 </div>
                 {COMING_SOON_SECTIONS.map((sec) => (
                   <div
                     key={sec.id}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs text-slate-500 opacity-60 flex items-center justify-between cursor-not-allowed"
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs text-surface-400 opacity-60 flex items-center justify-between cursor-not-allowed"
                   >
                     <span className="flex items-center space-x-2">
                       <span>{sec.icon}</span>
                       <span>{sec.label}</span>
                     </span>
-                    <span className="text-[9px] px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-400 font-mono">
+                    <Pill variant="neutral" size="sm">
                       Soon
-                    </span>
+                    </Pill>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Active Form Area */}
-            <div className="flex-1 p-6 overflow-y-auto min-h-[400px]">
+            <div className="flex-1 p-6 overflow-y-auto bg-surface-50/30 min-h-[400px]">
               {activeTab === 'personal_info' && (
                 <PersonalInfoForm
                   data={sectionsData.personal_info || {}}
@@ -347,7 +340,7 @@ export default function Builder() {
         </div>
 
         {/* Right Panel: Real-time Live Resume Preview */}
-        <div className="w-full md:w-1/2 lg:w-7/12 bg-slate-950 p-4 md:p-8 flex items-start justify-center min-h-[450px] overflow-y-auto">
+        <div className="w-full md:w-1/2 lg:w-7/12 bg-surface-900/95 p-4 md:p-8 flex items-start justify-center min-h-[450px] overflow-y-auto shadow-inner">
           <ResumePreview sections={sectionsData} />
         </div>
       </div>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import Button from '../components/ui/Button';
+import Badge, { Pill } from '../components/ui/Badge';
+import Input from '../components/ui/Input';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card';
 
 export default function Dashboard() {
   const { user, token, logout } = useAuth();
@@ -77,104 +81,146 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
-      {/* Navbar */}
-      <nav className="bg-slate-800/80 border-b border-slate-700/80 backdrop-blur px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <h1 className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            ResumeAI
-          </h1>
-          <span className="text-xs px-2 py-0.5 bg-slate-700 rounded text-slate-300">Dashboard</span>
-        </div>
+    <div className="min-h-screen bg-brand-canvas text-surface-900 flex flex-col font-body selection:bg-brand-500/20 selection:text-brand-700">
+      {/* Top Navbar Header */}
+      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-surface-200/80 px-6 py-4 shadow-soft-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-brand flex items-center justify-center text-white font-extrabold font-display text-xl shadow-soft-sm group-hover:scale-105 transition-transform">
+              R
+            </div>
+            <span className="text-xl font-extrabold font-display tracking-tight text-surface-900">
+              Resume<span className="text-brand-500">AI</span>
+            </span>
+          </Link>
 
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-slate-300 hidden sm:inline">
-            {user?.name}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-xs font-medium text-slate-200 rounded-lg transition-colors border border-slate-600"
-          >
-            Sign Out
-          </button>
+          <div className="flex items-center space-x-3">
+            <Badge variant="primary" dot>
+              {user?.name || 'User'}
+            </Badge>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              Sign Out
+            </Button>
+          </div>
         </div>
-      </nav>
+      </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-6 md:p-8 space-y-8">
-        {/* Banner Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between bg-gradient-to-r from-slate-800 to-indigo-950/50 p-6 md:p-8 rounded-2xl border border-slate-700/80 shadow-lg gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-white">Welcome back, {user?.name}!</h2>
-            <p className="text-slate-400 text-sm mt-1">
-              Create, manage, and tailor AI-powered resumes for your dream roles.
-            </p>
+      <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 space-y-8">
+        {/* Banner Card */}
+        <Card padding="p-8" className="bg-white/90 border-surface-200/80 shadow-soft-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center space-x-2">
+                <span className="text-xs font-semibold text-brand-600">Dashboard</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-surface-900 tracking-tight">
+                Welcome back, {user?.name}!
+              </h2>
+              <p className="text-xs sm:text-sm text-surface-600">
+                Manage, edit, and tailor your ATS-optimized resumes in one place.
+              </p>
+            </div>
+
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => setShowModal(true)}
+              leftIcon={<span>+</span>}
+              className="shadow-soft-md self-start sm:self-auto shrink-0"
+            >
+              New Resume
+            </Button>
+          </div>
+        </Card>
+
+        {/* Resumes Grid Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-surface-200/70 pb-3">
+            <div className="flex items-center space-x-3">
+              <h3 className="text-lg font-bold font-display text-surface-900">
+                Your Resumes
+              </h3>
+              <Badge variant="neutral" size="sm">
+                {resumes.length} total
+              </Badge>
+            </div>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 self-start md:self-auto"
-          >
-            <span className="text-lg">+</span>
-            <span>New Resume</span>
-          </button>
-        </div>
-
-        {/* Resumes List Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-            <span>Your Resumes</span>
-            <span className="text-xs px-2 py-0.5 bg-slate-800 rounded-full text-slate-400 font-mono">
-              {resumes.length}
-            </span>
-          </h3>
-
           {loading ? (
-            <div className="p-12 text-center text-slate-400">
-              <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-              Loading your resumes...
+            <div className="p-16 text-center text-surface-500 space-y-3">
+              <div className="w-7 h-7 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <p className="text-xs font-medium">Loading your resumes...</p>
             </div>
           ) : resumes.length === 0 ? (
-            <div className="bg-slate-800/40 border border-slate-800 rounded-2xl p-12 text-center space-y-3">
-              <div className="text-4xl">📄</div>
-              <h4 className="text-base font-semibold text-white">No resumes created yet</h4>
-              <p className="text-slate-400 text-sm max-w-sm mx-auto">
-                Click "+ New Resume" above to create your first resume.
-              </p>
-              <button
-                onClick={() => setShowModal(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
-              >
-                + New Resume
-              </button>
-            </div>
+            <Card padding="p-12" className="text-center space-y-4 bg-white/80 border-dashed border-surface-300">
+              <div className="w-14 h-14 bg-brand-50 border border-brand-200/60 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-soft-xs">
+                📄
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-base font-bold font-display text-surface-900">
+                  No resumes created yet
+                </h4>
+                <p className="text-xs text-surface-500 max-w-sm mx-auto">
+                  Click "+ New Resume" to start building your first ATS-ready resume with AI.
+                </p>
+              </div>
+              <Button variant="primary" size="md" onClick={() => setShowModal(true)} leftIcon={<span>+</span>}>
+                New Resume
+              </Button>
+            </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {resumes.map((res) => (
-                <Link
-                  key={res.id}
-                  to={`/builder/${res.id}`}
-                  className="bg-slate-800 hover:bg-slate-750 border border-slate-700/80 hover:border-indigo-500/50 rounded-xl p-5 transition-all group shadow-md hover:shadow-indigo-500/10 flex flex-col justify-between"
-                >
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xl">📄</span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 rounded text-slate-400 border border-slate-700">
-                        ID #{res.id}
-                      </span>
-                    </div>
-                    <h4 className="font-bold text-white group-hover:text-indigo-400 transition-colors text-base truncate">
-                      {res.title}
-                    </h4>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* + Create New Resume Card Tile */}
+              <div
+                onClick={() => setShowModal(true)}
+                className="rounded-2xl border-2 border-dashed border-brand-200 hover:border-brand-400 bg-brand-50/30 hover:bg-brand-50/70 p-6 flex flex-col items-center justify-center text-center space-y-3 cursor-pointer transition-all duration-200 group min-h-[220px]"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-white border border-brand-200 flex items-center justify-center text-brand-600 text-2xl shadow-soft-xs group-hover:scale-110 transition-transform">
+                  +
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold font-display text-brand-700">
+                    Create New Resume
+                  </h4>
+                  <p className="text-[11px] text-surface-500">
+                    Start a fresh document with ATS layout
+                  </p>
+                </div>
+              </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-700/50 flex justify-between items-center text-xs text-slate-400">
-                    <span>Updated {new Date(res.updated_at).toLocaleDateString()}</span>
-                    <span className="text-indigo-400 font-medium group-hover:translate-x-1 transition-transform">
-                      Edit →
-                    </span>
-                  </div>
-                </Link>
+              {/* Resume Cards */}
+              {resumes.map((res) => (
+                <Card
+                  key={res.id}
+                  hoverable
+                  padding="p-6"
+                  className="flex flex-col justify-between space-y-4"
+                >
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <Pill variant="primary" size="sm">
+                        ID #{res.id}
+                      </Pill>
+                      <Badge variant="success" size="sm" dot>
+                        Saved
+                      </Badge>
+                    </div>
+                    <CardTitle className="pt-1 truncate">{res.title}</CardTitle>
+                    <CardDescription>
+                      Last updated {new Date(res.updated_at).toLocaleDateString()}
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardFooter className="pt-2">
+                    <span className="text-[11px] text-surface-400 font-medium">ATS Ready</span>
+                    <Link to={`/builder/${res.id}`}>
+                      <Button size="sm" variant="secondary" rightIcon={<span>→</span>}>
+                        Continue Editing
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           )}
@@ -183,51 +229,65 @@ export default function Dashboard() {
 
       {/* New Resume Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-white">Create New Resume</h3>
-
-            {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-xs">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleCreateResume} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Resume Title
-                </label>
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Software Engineer 2026"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex justify-end space-x-3 pt-2">
+        <div className="fixed inset-0 bg-surface-950/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-md">
+            <Card padding="p-6" className="bg-white border-surface-200 shadow-soft-xl space-y-4">
+              <div className="flex items-center justify-between border-b border-surface-100 pb-3">
+                <h3 className="text-lg font-bold font-display text-surface-900">
+                  Create New Resume
+                </h3>
                 <button
-                  type="button"
                   onClick={() => {
                     setShowModal(false);
                     setError('');
                   }}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition-colors"
+                  className="text-surface-400 hover:text-surface-600 text-sm"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={creating}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center space-x-2"
-                >
-                  {creating ? 'Creating...' : 'Create & Open'}
+                  ✕
                 </button>
               </div>
-            </form>
+
+              {error && (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-medium flex items-center space-x-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleCreateResume} className="space-y-4">
+                <Input
+                  label="Resume Title"
+                  isRequired
+                  autoFocus
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="e.g. Senior Software Engineer 2026"
+                  helperText="Choose a title to identify this resume version."
+                />
+
+                <div className="flex justify-end space-x-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setShowModal(false);
+                      setError('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="sm"
+                    isLoading={creating}
+                  >
+                    {creating ? 'Creating...' : 'Create & Open'}
+                  </Button>
+                </div>
+              </form>
+            </Card>
           </div>
         </div>
       )}

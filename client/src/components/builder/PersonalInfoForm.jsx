@@ -1,4 +1,5 @@
 import React from 'react';
+import Input, { TextArea } from '../ui/Input';
 
 export default function PersonalInfoForm({ data = {}, onChange }) {
   const handleChange = (e) => {
@@ -10,101 +11,79 @@ export default function PersonalInfoForm({ data = {}, onChange }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="border-b border-slate-800 pb-3 mb-4">
-        <h3 className="text-base font-semibold text-white">Personal Information</h3>
-        <p className="text-xs text-slate-400">
+    <div className="space-y-5">
+      <div className="border-b border-surface-200/80 pb-3">
+        <h3 className="text-base font-bold font-display text-surface-900">Personal Information</h3>
+        <p className="text-xs text-surface-500">
           Enter your basic contact details and a professional summary.
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">
-            Full Name <span className="text-indigo-400">*</span>
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            value={data.fullName || ''}
-            onChange={handleChange}
-            placeholder="e.g. Jane Doe"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="Full Name"
+          name="fullName"
+          isRequired
+          placeholder="e.g. Jane Doe"
+          value={data.fullName || ''}
+          onChange={handleChange}
+        />
 
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">
-            Email Address <span className="text-indigo-400">*</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={data.email || ''}
-            onChange={handleChange}
-            placeholder="janedoe@example.com"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="Email Address"
+          type="email"
+          name="email"
+          isRequired
+          placeholder="janedoe@example.com"
+          value={data.email || ''}
+          onChange={handleChange}
+        />
 
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={data.phone || ''}
-            onChange={handleChange}
-            placeholder="+1 (555) 000-0000"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="Phone Number"
+          type="tel"
+          name="phone"
+          placeholder="+1 (555) 000-0000"
+          value={data.phone || ''}
+          onChange={handleChange}
+        />
 
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Location</label>
-          <input
-            type="text"
-            name="location"
-            value={data.location || ''}
-            onChange={handleChange}
-            placeholder="San Francisco, CA"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="Location"
+          name="location"
+          placeholder="San Francisco, CA"
+          value={data.location || ''}
+          onChange={handleChange}
+        />
 
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">LinkedIn URL</label>
-          <input
-            type="url"
-            name="linkedin"
-            value={data.linkedin || ''}
-            onChange={handleChange}
-            placeholder="linkedin.com/in/janedoe"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="LinkedIn URL"
+          type="url"
+          name="linkedin"
+          placeholder="linkedin.com/in/janedoe"
+          value={data.linkedin || ''}
+          onChange={handleChange}
+        />
 
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Portfolio / GitHub URL</label>
-          <input
-            type="url"
-            name="github"
-            value={data.github || ''}
-            onChange={handleChange}
-            placeholder="github.com/janedoe"
-            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Input
+          label="Portfolio / GitHub URL"
+          type="url"
+          name="github"
+          placeholder="github.com/janedoe"
+          value={data.github || ''}
+          onChange={handleChange}
+        />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-slate-300 mb-1">Professional Summary</label>
-        <textarea
+        <TextArea
+          label="Professional Summary"
           name="summary"
           rows={4}
+          placeholder="Passionate Full Stack Engineer with 4+ years of experience building scalable web applications..."
           value={data.summary || ''}
           onChange={handleChange}
-          placeholder="Passionate Full Stack Engineer with 4+ years of experience building scalable web applications..."
-          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed"
+          helperText="Keep summary between 2-4 sentences highlighting core tech stack."
         />
       </div>
     </div>
