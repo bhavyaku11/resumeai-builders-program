@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PersonalInfoForm from '../components/builder/PersonalInfoForm';
 import EducationForm from '../components/builder/EducationForm';
+import ExperienceForm from '../components/builder/ExperienceForm';
+import ProjectsForm from '../components/builder/ProjectsForm';
+import SkillsForm from '../components/builder/SkillsForm';
 import ResumePreview from '../components/builder/ResumePreview';
 
 const ACTIVE_SECTIONS = [
@@ -30,12 +33,15 @@ export default function Builder() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('personal_info');
-  const [saveStatus, setSaveStatus] = useState('All changes saved'); // 'Saving...', 'All changes saved', 'Failed to save'
+  const [saveStatus, setSaveStatus] = useState('All changes saved');
 
   // Sections content dictionary
   const [sectionsData, setSectionsData] = useState({
     personal_info: {},
     education: { items: [] },
+    experience: { items: [] },
+    projects: { items: [] },
+    skills: { categories: [] },
   });
 
   const saveTimerRef = useRef({});
@@ -63,6 +69,9 @@ export default function Builder() {
           const initialSections = {
             personal_info: {},
             education: { items: [] },
+            experience: { items: [] },
+            projects: { items: [] },
+            skills: { categories: [] },
           };
 
           if (Array.isArray(data.resume.sections)) {
@@ -128,12 +137,10 @@ export default function Builder() {
 
     setSaveStatus('Saving...');
 
-    // Clear existing timer for this section
     if (saveTimerRef.current[sectionType]) {
       clearTimeout(saveTimerRef.current[sectionType]);
     }
 
-    // Set 1-second debounce timer
     saveTimerRef.current[sectionType] = setTimeout(() => {
       saveSectionToApi(sectionType, newContent);
     }, 1000);
@@ -315,16 +322,25 @@ export default function Builder() {
                 />
               )}
 
-              {activeTab !== 'personal_info' && activeTab !== 'education' && (
-                <div className="py-16 text-center text-slate-400 space-y-2">
-                  <div className="text-3xl">🚧</div>
-                  <h4 className="text-sm font-semibold text-slate-300">
-                    {ACTIVE_SECTIONS.find((s) => s.id === activeTab)?.label} Form Coming Next
-                  </h4>
-                  <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                    Form controls for {activeTab} will be added in upcoming steps.
-                  </p>
-                </div>
+              {activeTab === 'experience' && (
+                <ExperienceForm
+                  data={sectionsData.experience || { items: [] }}
+                  onChange={(newVal) => handleSectionChange('experience', newVal)}
+                />
+              )}
+
+              {activeTab === 'projects' && (
+                <ProjectsForm
+                  data={sectionsData.projects || { items: [] }}
+                  onChange={(newVal) => handleSectionChange('projects', newVal)}
+                />
+              )}
+
+              {activeTab === 'skills' && (
+                <SkillsForm
+                  data={sectionsData.skills || { categories: [] }}
+                  onChange={(newVal) => handleSectionChange('skills', newVal)}
+                />
               )}
             </div>
           </div>
