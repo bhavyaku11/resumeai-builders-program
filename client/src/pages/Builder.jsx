@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PersonalInfoForm from '../components/builder/PersonalInfoForm';
+import EducationForm from '../components/builder/EducationForm';
+import ResumePreview from '../components/builder/ResumePreview';
 
 const ACTIVE_SECTIONS = [
-  { id: 'personal_info', label: 'Personal Info', icon: '👤' },
-  { id: 'education', label: 'Education', icon: '🎓' },
-  { id: 'experience', label: 'Experience', icon: '💼' },
-  { id: 'projects', label: 'Projects', icon: '🚀' },
-  { id: 'skills', label: 'Skills', icon: '⚡' },
+  { id: 'personal_info', label: 'Personal Info', icon: '👤', sortOrder: 1 },
+  { id: 'education', label: 'Education', icon: '🎓', sortOrder: 2 },
+  { id: 'experience', label: 'Experience', icon: '💼', sortOrder: 3 },
+  { id: 'projects', label: 'Projects', icon: '🚀', sortOrder: 4 },
+  { id: 'skills', label: 'Skills', icon: '⚡', sortOrder: 5 },
 ];
 
 const COMING_SOON_SECTIONS = [
@@ -27,8 +30,17 @@ export default function Builder() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('personal_info');
-  const [saveStatus, setSaveStatus] = useState('Saved'); // 'Saved', 'Saving...', 'Unsaved'
+  const [saveStatus, setSaveStatus] = useState('All changes saved'); // 'Saving...', 'All changes saved', 'Failed to save'
 
+  // Sections content dictionary
+  const [sectionsData, setSectionsData] = useState({
+    personal_info: {},
+    education: { items: [] },
+  });
+
+  const saveTimerRef = useRef({});
+
+  // Fetch Resume and Existing Sections
   useEffect(() => {
     const fetchResume = async () => {
       setLoading(true);
@@ -46,6 +58,20 @@ export default function Builder() {
           setError(data.message || 'Failed to load resume');
         } else {
           setResume(data.resume);
+
+          // Populate sectionsData from API response
+          const initialSections = {
+            personal_info: {},
+            education: { items: [] },
+          };
+
+          if (Array.isArray(data.resume.sections)) {
+            data.resume.sections.forEach((sec) => {
+              initialSections[sec.section_type] = sec.content;
+            });
+          }
+
+          setSectionsData(initialSections);
         }
       } catch (err) {
         console.error('Error fetching resume:', err);
@@ -59,6 +85,65 @@ export default function Builder() {
       fetchResume();
     }
   }, [resumeId, token]);
+
+  // Save section content to API
+  const saveSectionToApi = useCallback(
+    async (sectionType, content) => {
+      setSaveStatus('Saving...');
+      try {
+        const secMeta = ACTIVE_SECTIONS.find((s) => s.id === sectionType);
+        const sortOrder = secMeta ? secMeta.sortOrder : 1;
+
+        const response = await fetch(`/api/resumes/${resumeId}/sections/${sectionType}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content,
+            sort_order: sortOrder,
+          }),
+        });
+
+        if (response.ok) {
+          setSaveStatus('All changes saved');
+        } else {
+          setSaveStatus('Failed to save');
+        }
+      } catch (err) {
+        console.error('Failed to auto-save section:', err);
+        setSaveStatus('Failed to save');
+      }
+    },
+    [resumeId, token]
+  );
+
+  // Handle local state change and trigger 1-second debounced auto-save
+  const handleSectionChange = (sectionType, newContent) => {
+    setSectionsData((prev) => ({
+      ...prev,
+      [sectionType]: newContent,
+    }));
+
+    setSaveStatus('Saving...');
+
+    // Clear existing timer for this section
+    if (saveTimerRef.current[sectionType]) {
+      clearTimeout(saveTimerRef.current[sectionType]);
+    }
+
+    // Set 1-second debounce timer
+    saveTimerRef.current[sectionType] = setTimeout(() => {
+      saveSectionToApi(sectionType, newContent);
+    }, 1000);
+  };
+
+  const handleRetrySave = () => {
+    if (sectionsData[activeTab]) {
+      saveSectionToApi(activeTab, sectionsData[activeTab]);
+    }
+  };
 
   if (loading) {
     return (
@@ -109,24 +194,42 @@ export default function Builder() {
           </h1>
         </div>
 
+        {/* Save Status Indicator */}
         <div className="flex items-center space-x-4">
-          {/* Save Status Indicator */}
           <div className="flex items-center space-x-2 text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-slate-400">{saveStatus}</span>
-          </div>
-
-          <div className="hidden sm:block text-xs px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded text-indigo-400 font-mono">
-            ID: {resume.id}
+            {saveStatus === 'Saving...' && (
+              <>
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span className="text-amber-400">Saving...</span>
+              </>
+            )}
+            {saveStatus === 'All changes saved' && (
+              <>
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span className="text-emerald-400">All changes saved</span>
+              </>
+            )}
+            {saveStatus === 'Failed to save' && (
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                <span className="text-red-400">Failed to save</span>
+                <button
+                  onClick={handleRetrySave}
+                  className="px-2 py-0.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded text-[10px] font-semibold transition-colors"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Main Two-Panel Content Shell */}
+      {/* Main Two-Panel Content */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        {/* Left Panel: Section Navigation & Form Area */}
+        {/* Left Panel: Section Navigation & Active Form */}
         <div className="w-full md:w-1/2 lg:w-5/12 border-r border-slate-800 flex flex-col bg-slate-900/50">
-          {/* Section Navigation Tabs (Horizontal scroll on mobile, tab grid) */}
+          {/* Horizontal scrollable tabs */}
           <div className="p-3 bg-slate-800/40 border-b border-slate-800 overflow-x-auto scrollbar-none">
             <div className="flex space-x-2">
               {ACTIVE_SECTIONS.map((sec) => {
@@ -149,9 +252,8 @@ export default function Builder() {
             </div>
           </div>
 
-          {/* Section List Sidebar + Active Form Split */}
           <div className="flex-1 flex flex-col md:flex-row overflow-y-auto">
-            {/* Vertical Section Selector Sidebar */}
+            {/* Sidebar nav */}
             <div className="w-full md:w-48 bg-slate-800/20 border-b md:border-b-0 md:border-r border-slate-800 p-2 space-y-1">
               <div className="px-2 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
                 Sections
@@ -197,40 +299,40 @@ export default function Builder() {
               </div>
             </div>
 
-            {/* Active Section Placeholder Form Area */}
-            <div className="flex-1 p-6 flex flex-col items-center justify-center text-center border-t md:border-t-0 border-slate-800 min-h-[300px]">
-              <div className="p-4 bg-slate-800/60 rounded-full border border-slate-700/60 text-2xl mb-3">
-                {ACTIVE_SECTIONS.find((s) => s.id === activeTab)?.icon}
-              </div>
-              <h3 className="text-lg font-bold text-white mb-1">
-                {ACTIVE_SECTIONS.find((s) => s.id === activeTab)?.label} Form
-              </h3>
-              <p className="text-slate-400 text-xs max-w-xs mb-4">
-                Section editing fields for {ACTIVE_SECTIONS.find((s) => s.id === activeTab)?.label} will be loaded here in the next step.
-              </p>
-              <div className="px-3 py-1.5 bg-slate-800 rounded border border-slate-700 text-slate-400 text-xs font-mono">
-                Active Tab ID: <span className="text-indigo-400">{activeTab}</span>
-              </div>
+            {/* Active Form Area */}
+            <div className="flex-1 p-6 overflow-y-auto min-h-[400px]">
+              {activeTab === 'personal_info' && (
+                <PersonalInfoForm
+                  data={sectionsData.personal_info || {}}
+                  onChange={(newVal) => handleSectionChange('personal_info', newVal)}
+                />
+              )}
+
+              {activeTab === 'education' && (
+                <EducationForm
+                  data={sectionsData.education || { items: [] }}
+                  onChange={(newVal) => handleSectionChange('education', newVal)}
+                />
+              )}
+
+              {activeTab !== 'personal_info' && activeTab !== 'education' && (
+                <div className="py-16 text-center text-slate-400 space-y-2">
+                  <div className="text-3xl">🚧</div>
+                  <h4 className="text-sm font-semibold text-slate-300">
+                    {ACTIVE_SECTIONS.find((s) => s.id === activeTab)?.label} Form Coming Next
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                    Form controls for {activeTab} will be added in upcoming steps.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Right Panel: Live Resume Preview */}
-        <div className="w-full md:w-1/2 lg:w-7/12 bg-slate-950 p-6 flex flex-col items-center justify-center min-h-[400px] overflow-y-auto">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center shadow-2xl flex flex-col items-center justify-center space-y-4 min-h-[450px]">
-            <div className="w-16 h-16 bg-indigo-500/10 text-indigo-400 rounded-2xl border border-indigo-500/20 flex items-center justify-center text-2xl">
-              📄
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">Live Resume Preview</h3>
-              <p className="text-slate-400 text-sm mt-1">Preview will appear here</p>
-            </div>
-            <div className="w-full max-w-xs space-y-2 pt-4 opacity-40">
-              <div className="h-3 bg-slate-700 rounded-full w-3/4 mx-auto"></div>
-              <div className="h-2 bg-slate-800 rounded-full w-1/2 mx-auto"></div>
-              <div className="h-2 bg-slate-800 rounded-full w-5/6 mx-auto"></div>
-            </div>
-          </div>
+        {/* Right Panel: Real-time Live Resume Preview */}
+        <div className="w-full md:w-1/2 lg:w-7/12 bg-slate-950 p-4 md:p-8 flex items-start justify-center min-h-[450px] overflow-y-auto">
+          <ResumePreview sections={sectionsData} />
         </div>
       </div>
     </div>
