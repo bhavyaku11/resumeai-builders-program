@@ -53,12 +53,7 @@ export default function Header() {
           >
             Pricing
           </a>
-          <Link
-            to="/style-guide"
-            className="text-xs font-semibold text-surface-400 hover:text-brand-600 transition-colors"
-          >
-            Design System
-          </Link>
+
         </nav>
 
         {/* Right CTA Actions */}

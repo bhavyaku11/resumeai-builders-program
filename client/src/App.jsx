@@ -8,7 +8,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Builder from './pages/Builder';
-import StyleGuide from './pages/StyleGuide';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -21,7 +20,6 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/style-guide" element={<StyleGuide />} />
 
             {/* Protected Application Routes */}
             <Route element={<ProtectedRoute />}>
