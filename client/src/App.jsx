@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Builder from './pages/Builder';
+import StyleGuide from './pages/StyleGuide';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -15,9 +16,10 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            {/* Public Auth Routes */}
+            {/* Public Auth & Design System Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/style-guide" element={<StyleGuide />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
