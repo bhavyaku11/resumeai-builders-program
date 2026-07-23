@@ -1,36 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
-
-/* ─── 3 ORIGINAL headline options ─────────────────────────────────────────
-   The highlighted phrase (shown in violet) is marked with ||...||
-   so the render function can split and colorise it cleanly.               */
-const HEADLINES = [
-  {
-    id: 1,
-    // Highlighted phrase → "ATS-Optimized"
-    before: 'Build an ',
-    highlight: 'ATS-Optimized',
-    after: ' Resume in Minutes — Powered by AI',
-    sub: 'Write your experience once. HireSetu structures it into a clean, recruiter-ready document that gets past automated screening filters and into human hands.',
-  },
-  {
-    id: 2,
-    // Highlighted phrase → "AI That Writes"
-    before: '',
-    highlight: 'AI That Writes',
-    after: ' Your Resume the Way Recruiters Want to Read It',
-    sub: 'Stop second-guessing bullet points and formatting. Our AI turns your raw career history into a polished, role-targeted resume ready to submit today.',
-  },
-  {
-    id: 3,
-    // Highlighted phrase → "Land the Interview,"
-    before: '',
-    highlight: 'Land the Interview,',
-    after: ' Not the Rejection — AI-Built, ATS-Ready Resumes',
-    sub: 'Every section is auto-saved, every keyword is optimised, and every layout is tested for ATS compatibility — so you can focus on the job, not the document.',
-  },
-];
 
 /* ─── Decorative dot-grid SVG ────────────────────────────────────────── */
 function DotGrid({ className = '' }) {
@@ -148,8 +118,6 @@ function ResumeCard({ className = '', style = {} }) {
 
 /* ─── Main Hero Component ────────────────────────────────────────────── */
 export default function Hero() {
-  const [active, setActive] = useState(HEADLINES[0]);
-
   return (
     <section className="relative hero-bg pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
 
@@ -173,53 +141,30 @@ export default function Hero() {
           {/* ══════════════════════════════════════════
               LEFT COLUMN — Copy & CTAs
           ══════════════════════════════════════════ */}
-          <div className="space-y-7 text-center lg:text-left">
+          <div className="space-y-8 text-center lg:text-left">
 
-            {/* Pill badge */}
+            {/* Pill badge — adds context the headline doesn't */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200/80 shadow-soft-xs">
-              <span className="px-2 py-0.5 rounded-full bg-brand-500 text-white text-[10px] font-black font-display tracking-wide uppercase leading-none">
-                New
-              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0" />
               <span className="text-[12px] font-semibold text-brand-700 tracking-tight">
-                AI-Powered Resume Builder
+                Free for students &amp; fresh grads
               </span>
             </div>
 
-            {/* Headline — 3 options selector */}
-            <div className="space-y-4">
-              <h1 className="text-[40px] sm:text-[52px] lg:text-[58px] font-extrabold font-display text-surface-900 tracking-[-0.03em] leading-[1.08]">
-                {active.before}
-                <span className="text-gradient-brand">{active.highlight}</span>
-                {active.after}
-              </h1>
+            {/* Headline — one line, committed */}
+            <h1 className="text-[42px] sm:text-[54px] lg:text-[60px] font-extrabold font-display text-surface-900 tracking-[-0.03em] leading-[1.06]">
+              Your resume,{' '}
+              <span className="text-gradient-brand">done right</span>
+              {' '}— in minutes.
+            </h1>
 
-              {/* Variation pills */}
-              <div className="flex items-center gap-1.5 justify-center lg:justify-start">
-                <span className="text-[10px] font-semibold text-surface-400 uppercase tracking-widest mr-1">
-                  Headline:
-                </span>
-                {HEADLINES.map((h) => (
-                  <button
-                    key={h.id}
-                    onClick={() => setActive(h)}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all duration-150 ${
-                      active.id === h.id
-                        ? 'bg-brand-500 text-white shadow-soft-xs'
-                        : 'bg-white/80 text-surface-500 border border-surface-200 hover:border-brand-300 hover:text-brand-600'
-                    }`}
-                  >
-                    {h.id}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Supporting paragraph */}
-            <p className="text-[15px] sm:text-base text-surface-500 font-body leading-[1.75] max-w-xl mx-auto lg:mx-0">
-              {active.sub}
+            {/* Supporting line — peer tone, no jargon */}
+            <p className="text-[16px] sm:text-[17px] text-surface-500 font-body leading-[1.7] max-w-lg mx-auto lg:mx-0">
+              Tell us where you've been. HireSetu writes the resume
+              that gets you where you're going.
             </p>
 
-            {/* CTA buttons */}
+            {/* CTA buttons — exactly two */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
               <Link to="/register" className="w-full sm:w-auto">
                 <Button
@@ -240,23 +185,18 @@ export default function Hero() {
                   variant="outline"
                   size="lg"
                   className="w-full sm:w-auto px-7"
-                  leftIcon={
-                    <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  }
                 >
                   Check Resume Score
                 </Button>
               </Link>
             </div>
 
-            {/* Trust micro-badges */}
-            <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-[12px] font-medium text-surface-500">
+            {/* Trust micro-badges — earn their space here */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-[12px] font-medium text-surface-500">
               {[
                 { dot: 'bg-emerald-400', text: 'Free to start' },
                 { dot: 'bg-brand-500', text: 'ATS-compatible layouts' },
-                { dot: 'bg-brand-400', text: 'Real-time auto-save' },
+                { dot: 'bg-brand-400', text: 'Auto-saves as you type' },
               ].map(({ dot, text }) => (
                 <div key={text} className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
@@ -268,6 +208,7 @@ export default function Hero() {
 
           {/* ══════════════════════════════════════════
               RIGHT COLUMN — Layered resume mockup
+              (unchanged — layout/visual pass only)
           ══════════════════════════════════════════ */}
           <div className="relative flex justify-center lg:justify-end">
 
