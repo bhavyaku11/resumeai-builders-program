@@ -111,3 +111,21 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Floating Animation ──────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(3deg); }
+  66%       { transform: translateY(-4px) rotate(-2deg); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Hero Background ─────────────────────── */
+.hero-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 60% -10%, #ede9ff 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, #f0edff 0%, transparent 55%),
+    #ffffff;
+}
+
