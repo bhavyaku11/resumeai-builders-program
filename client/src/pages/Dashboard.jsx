@@ -87,10 +87,10 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-brand flex items-center justify-center text-white font-extrabold font-display text-xl shadow-soft-sm group-hover:scale-105 transition-transform">
-              R
+              H
             </div>
             <span className="text-xl font-extrabold font-display tracking-tight text-surface-900">
-              Resume<span className="text-brand-500">AI</span>
+              Hire<span className="text-brand-500">Setu</span>
             </span>
           </Link>
 

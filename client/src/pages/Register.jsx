@@ -82,10 +82,10 @@ export default function Register() {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center space-x-2.5 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center text-white font-extrabold font-display text-xl shadow-soft-sm group-hover:scale-105 transition-transform">
-              R
+              H
             </div>
             <span className="text-2xl font-extrabold font-display tracking-tight text-surface-900">
-              Resume<span className="text-brand-500">AI</span>
+              Hire<span className="text-brand-500">Setu</span>
             </span>
           </Link>
           <h1 className="text-xl font-bold font-display text-surface-900 tracking-tight">

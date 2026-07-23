@@ -1,7 +1,7 @@
 {
-  "name": "resumeai-server",
+  "name": "hiresetu-server",
   "version": "1.0.0",
-  "description": "ResumeAI Express Server",
+  "description": "HireSetu Express Server",
   "main": "src/index.js",
   "type": "module",
   "scripts": {

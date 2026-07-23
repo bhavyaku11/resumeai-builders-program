@@ -1,4 +1,4 @@
--- Database Schema for ResumeAI
+-- Database Schema for HireSetu
 
 CREATE DATABASE IF NOT EXISTS resumeai_builder;
 USE resumeai_builder;

@@ -1,4 +1,4 @@
-# ResumeAI — AI-Powered Resume Builder
+# HireSetu — AI-Powered Resume Builder
 
 > An intelligent, full-stack AI resume builder designed to craft ATS-friendly, professional resumes with real-time live preview and automated saving.
 

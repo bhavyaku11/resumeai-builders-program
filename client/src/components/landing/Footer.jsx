@@ -37,7 +37,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-surface-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-surface-500 gap-4">
-          <p>© {new Date().getFullYear()} ResumeAI. Built for job seekers and software engineers.</p>
+          <p>© {new Date().getFullYear()} HireSetu. Built for job seekers and software engineers.</p>
           <p className="text-[11px] text-surface-600">
             Sprint 1 Production Release • 100% ATS Parser Compatible
           </p>

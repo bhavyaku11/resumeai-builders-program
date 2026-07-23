@@ -12,7 +12,7 @@ const HEADLINES = [
     before: 'Build an ',
     highlight: 'ATS-Optimized',
     after: ' Resume in Minutes — Powered by AI',
-    sub: 'Write your experience once. ResumeAI structures it into a clean, recruiter-ready document that gets past automated screening filters and into human hands.',
+    sub: 'Write your experience once. HireSetu structures it into a clean, recruiter-ready document that gets past automated screening filters and into human hands.',
   },
   {
     id: 2,

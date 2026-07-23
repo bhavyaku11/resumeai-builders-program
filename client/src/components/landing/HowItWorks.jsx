@@ -39,7 +39,7 @@ export default function HowItWorks() {
             Three Simple Steps
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-surface-900 tracking-tight">
-            How ResumeAI Works
+            How HireSetu Works
           </h2>
           <p className="text-sm sm:text-base text-surface-600 font-body leading-relaxed">
             From raw career background to ATS-optimized resume in minutes with our streamlined workflow.

@@ -20,7 +20,7 @@ export default function StyleGuide() {
             </div>
             <div>
               <h1 className="text-lg font-bold font-display text-surface-900 tracking-tight leading-none">
-                ResumeAI Design System
+                HireSetu Design System
               </h1>
               <span className="text-xs text-surface-500 font-medium">
                 Tokens, Base Components & Style Reference
@@ -174,7 +174,7 @@ export default function StyleGuide() {
               <div className="space-y-3">
                 <span className="text-[10px] font-mono text-surface-400 uppercase">Body Large — 16px</span>
                 <p className="text-base text-surface-700 leading-relaxed font-body">
-                  ResumeAI automatically parses your raw work history and formats it into clean, recruiter-approved ATS templates optimized for tech companies.
+                  HireSetu automatically parses your raw work history and formats it into clean, recruiter-approved ATS templates optimized for tech companies.
                 </p>
               </div>
 
