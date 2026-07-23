@@ -3,6 +3,7 @@ import Header from '../components/landing/Header';
 import Hero from '../components/landing/Hero';
 import HowItWorks from '../components/landing/HowItWorks';
 import Features from '../components/landing/Features';
+import CredibilityStat from '../components/landing/CredibilityStat';
 import Footer from '../components/landing/Footer';
 
 export default function Landing() {
@@ -16,6 +17,7 @@ export default function Landing() {
         <Hero />
         <HowItWorks />
         <Features />
+        <CredibilityStat />
       </main>
 
       {/* Footer */}
